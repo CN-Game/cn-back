@@ -8,9 +8,10 @@ const Game = require('../models/game')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.json({ title: 'Express' });
+  res.json({ title: 'Welcome' });
 });
 
+// Get all games
 router.get('/games', function(req, res, next) {
 
   Game.find(function(err, games) {
@@ -22,6 +23,7 @@ router.get('/games', function(req, res, next) {
 
 });
 
+// Get one Game by ID
 router.get('/games/:id', function(req, res, next) {
 
   const id = req.params.id;
@@ -35,19 +37,29 @@ router.get('/games/:id', function(req, res, next) {
 
 });
 
+// Update Game
 router.post('/games/:id', function(req, res, next) {
 
   const id = req.params.id;
+  const { pseudo, socketId } = req.body;
 
   Game.findOne({id: id}, function(err, game) {
     if (err)
       res.send(err);
 
-    res.json(game);
+    game.players.push({ pseudo, socketId })
+
+    game.save(function(err) {
+      if (err)
+        res.send(err);
+
+      res.send('Updated')
+    });
   });
 
 });
 
+// Create Game
 router.post('/games', function(req, res, next) {
 
   const gameId = Math.floor(100000 + Math.random() * 900000)

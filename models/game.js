@@ -8,6 +8,7 @@ const gameSchema = new mongoose.Schema({
         discovered: Boolean,
     }],
     players: [{
+        socketId: String,
         pseudo: String,
         team: { type: String, enum: ['blue', 'red'] },
         role: { type: String, enum: ['spy', 'agent'] },
