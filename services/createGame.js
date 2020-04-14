@@ -25,13 +25,13 @@ createGame = (words) => {
 
     let wordIndex = 0;
 
-    const colorsMap = {black: 'black', red: 'red', blue: 'blue'};
+    const colorsMap = {black: '#333', red: '#EB5757', blue: '#2F80ED', neutral: '#F2C94C'};
 
     const grid = []; // { value: Word, color: Blue, Red, Black}
 
     _fillGrid = () => {
         grid.forEach((caseItem, index) => {
-            if (caseItem.color == null) {
+            if (caseItem.color === colorsMap.neutral) {
                 let r = Math.random();
                 if (r < 0.20 && redToWrite > 0) {
                     grid[index].color = colorsMap.red;
@@ -73,7 +73,7 @@ createGame = (words) => {
             _writeCase(word, colorsMap.black);
             blackToWrite--;
         } else {
-            _writeCase(word, null);
+            _writeCase(word, colorsMap.neutral);
         }
     }
 
