@@ -8,7 +8,7 @@ function socket (server) {
     const room = socket.handshake.query.room;
 
     socket.join(room);
-    
+
     socket.on('New user connected', function(msg){
       io.to(room).emit('UPDATE_CLIENT', msg);
     });
@@ -21,10 +21,26 @@ function socket (server) {
         { new: true }
       );
 
-      console.log(game)
+      // console.log(game);
 
       io.to(room).emit('UPDATE_CLIENT')
+    });
+
+    socket.on('GAME_BEGIN', () => {
+      console.log('The game begin')
+      io.to(room).emit('GO_TO_GAME');
+    });
+
+
+    socket.on('NEXT_TURN', (data) => {
+      // TODO: update bdd round value
+      io.to(room).emit('NEXT_TURN', data)
     })
+
+
+
+
+
 
     socket.on('disconnect', () => {
       Game.update(
@@ -37,7 +53,8 @@ function socket (server) {
         {}
         ,
         function (err, game) {
-          console.log(game)
+          console.log(socket.id)
+          console.log('Disconnect: ', game)
         }
       );
 
