@@ -32,7 +32,12 @@ function socket (server) {
     });
 
 
-    socket.on('NEXT_TURN', (data) => {
+    socket.on('NEXT_TURN', async (data) => {
+      await Game.findOneAndUpdate(
+          {id:room, "players.socketId": socket.id},
+          {"players.$.role": data.role, "players.$.team": data.team},
+          { new: true }
+      );
       // TODO: update bdd round value
       io.to(room).emit('NEXT_TURN', data)
     })
