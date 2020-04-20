@@ -34,8 +34,38 @@ function socket (server) {
 
 
     socket.on('NEXT_TURN', async (data) => {
-      cardsSelected = [];
+      await Game.findOneAndUpdate(
+            {id:room},
+            {turn: data.toNextTurn}
+          );
       // TODO: update bdd round value
+
+      if (data.toNextTurn === 'BS' || data.toNextTurn === 'RS') {
+        for (const card of cardsSelected) {
+          await Game.findOneAndUpdate(
+              {id:room, "board._id": card._id},
+              {"board.$.discovered": true},
+              { new: true }
+          );
+        }
+        let blueScore = 0;
+        let redScore = 0;
+        Game.findOne({id: room}, function(err, game) {
+          console.log(game);
+          game.board.forEach( card => {
+            if (card.team === "blue" && card.discovered) {
+              blueScore++;
+            } else if (card.team === "red" && card.discovered) {
+              redScore++;
+            }
+          });
+          game.blueScore = blueScore;
+          game.redScore = redScore;
+          game.save()
+        });
+      }
+      cardsSelected = [];
+      io.to(room).emit('CARDS_SELECT_UPDATE', cardsSelected);
       io.to(room).emit('NEXT_TURN', data)
     });
 

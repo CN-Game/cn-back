@@ -6,6 +6,7 @@ const gameSchema = new mongoose.Schema({
         word: String,
         color: String,
         discovered: {type: Boolean, default: false},
+        team: String,
     }],
     players: [{
         socketId: String,
@@ -13,7 +14,9 @@ const gameSchema = new mongoose.Schema({
         team: { type: String, enum: ['blue', 'red'] },
         role: { type: String, enum: ['BS', 'BA', 'RS', 'RA'] },
     }],
-    turn: { type: String, enum: ['BS', 'BA', 'N', 'RS', 'RA'], default: 'BS' }
+    turn: { type: String, enum: ['BS', 'BA', 'N', 'RS', 'RA'], default: 'BS' },
+    blueScore: {type: Number, default: 0},
+    redScore: {type: Number, default: 0},
 });
 
 module.exports = mongoose.model('Game', gameSchema );

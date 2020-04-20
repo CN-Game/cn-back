@@ -7,7 +7,7 @@ createGame = (words) => {
         index = 0
 
     while (index < 25) {
-        var word = words[Math.trunc(Math.random() * (length - 0) + 0)]
+        var word = words[Math.trunc(Math.random() * (length - 0) + 0)];
 
         if (wordsList.indexOf(word) === -1) {
             wordsList.push(word);
@@ -35,9 +35,11 @@ createGame = (words) => {
                 let r = Math.random();
                 if (r < 0.20 && redToWrite > 0) {
                     grid[index].color = colorsMap.red;
+                    grid[index].team = 'red';
                     redToWrite--;
                 } else if (r < 0.4 && blueToWrite > 0) {
                     grid[index].color = colorsMap.blue;
+                    grid[index].team = 'blue';
                     blueToWrite--;
                 } else if (r < 0.6 && blackToWrite > 0) {
                     grid[index].color = colorsMap.black;
@@ -53,8 +55,8 @@ createGame = (words) => {
         }
     }
 
-    _writeCase = (word, color) => {
-        const caseItem = {color: color, word: word};
+    _writeCase = (word, color, team = '') => {
+        const caseItem = {color: color, word: word, team: team};
         grid.push(caseItem);
     }
 
@@ -64,10 +66,10 @@ createGame = (words) => {
 
         let r = Math.random();
         if (r < 0.20 && redToWrite > 0) {
-            _writeCase(word, colorsMap.red);
+            _writeCase(word, colorsMap.red, 'red');
             redToWrite--;
         } else if (r < 0.4 && blueToWrite > 0) {
-            _writeCase(word, colorsMap.blue);
+            _writeCase(word, colorsMap.blue, 'blue');
             blueToWrite--;
         } else if (r < 0.6 && blackToWrite > 0) {
             _writeCase(word, colorsMap.black);
