@@ -17,6 +17,8 @@ const gameSchema = new mongoose.Schema({
     turn: { type: String, enum: ['BS', 'BA', 'N', 'RS', 'RA'], default: 'BS' },
     blueScore: {type: Number, default: 0},
     redScore: {type: Number, default: 0},
+    winner: String,
+    finished: {type: Boolean, default: false},
 });
 
 module.exports = mongoose.model('Game', gameSchema );

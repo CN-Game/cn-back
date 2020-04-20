@@ -32,13 +32,16 @@ function socket (server) {
       io.to(room).emit('GO_TO_GAME');
     });
 
+    const _setFinished = (game, winner) => {
+      game.finished = true;
+      game.winner = winner;
+    };
 
     socket.on('NEXT_TURN', async (data) => {
       await Game.findOneAndUpdate(
             {id:room},
             {turn: data.toNextTurn}
           );
-      // TODO: update bdd round value
 
       if (data.toNextTurn === 'BS' || data.toNextTurn === 'RS') {
         for (const card of cardsSelected) {
@@ -57,8 +60,24 @@ function socket (server) {
               blueScore++;
             } else if (card.team === "red" && card.discovered) {
               redScore++;
+            } else if (card.team === "black" && card.discovered) {
+              switch (data.toNextTurn) {
+                case 'BS':
+                  _setFinished(game, 'blue')
+                  break;
+                case 'RS':
+                  _setFinished(game, 'red')
+                  break
+              }
             }
           });
+          if (blueScore === 7){
+            _setFinished(game, 'blue')
+          }
+          if (redScore === 7){
+            _setFinished(game, 'red')
+          }
+
           game.blueScore = blueScore;
           game.redScore = redScore;
           game.save()

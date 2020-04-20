@@ -43,6 +43,7 @@ createGame = (words) => {
                     blueToWrite--;
                 } else if (r < 0.6 && blackToWrite > 0) {
                     grid[index].color = colorsMap.black;
+                    grid[index].team = 'black';
                     blackToWrite--;
                 }
             }
@@ -72,7 +73,7 @@ createGame = (words) => {
             _writeCase(word, colorsMap.blue, 'blue');
             blueToWrite--;
         } else if (r < 0.6 && blackToWrite > 0) {
-            _writeCase(word, colorsMap.black);
+            _writeCase(word, colorsMap.black, 'black');
             blackToWrite--;
         } else {
             _writeCase(word, colorsMap.neutral);
