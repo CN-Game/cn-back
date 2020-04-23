@@ -71,10 +71,10 @@ function socket (server) {
               }
             }
           });
-          if (blueScore === 7){
+          if (blueScore === 7 && !game.finished){
             _setFinished(game, 'blue')
           }
-          if (redScore === 7){
+          if (redScore === 7 && !game.finished){
             _setFinished(game, 'red')
           }
 

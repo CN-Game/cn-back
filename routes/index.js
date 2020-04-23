@@ -32,7 +32,13 @@ router.get('/games/:id', function(req, res, next) {
     if (err)
       res.send(err);
 
-    res.json(game);
+    if (game) {
+      console.log(200);
+      res.status(200).json(game);
+    } else {
+      console.log(404);
+      res.status(404).json('No game found');
+    }
   });
 
 });
