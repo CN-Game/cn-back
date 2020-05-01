@@ -38,13 +38,13 @@ function socket (server) {
     };
 
     socket.on('NEXT_TURN', async (data) => {
-      await Game.findOneAndUpdate(
+      const game = await Game.findOneAndUpdate(
             {id:room},
             {turn: data.toNextTurn}
           );
 
       if (data.toNextTurn === 'BS' || data.toNextTurn === 'RS') {
-        for (const card of cardsSelected) {
+        for (const card of game.cardsSelected) {
           await Game.findOneAndUpdate(
               {id:room, "board._id": card._id},
               {"board.$.discovered": true},
@@ -94,14 +94,13 @@ function socket (server) {
       if ((turn === 'BA' && player.role === 'BA') || (turn === 'RA' && player.role === 'RA')) {
 
         await Game.findOne({id:room}, function (err, game) {
-          console.log(game.cardsSelected)
           if (game.cardsSelected.some(card => card._id === item._id)) {
             game.cardsSelected = game.cardsSelected.filter(card => card._id !== item._id)
           } else {
             game.cardsSelected.push(item);
           }
           game.save();
-          
+
           io.to(room).emit('CARDS_SELECT_UPDATE', game.cardsSelected);
         });
       }
