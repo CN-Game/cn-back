@@ -17,6 +17,7 @@ const gameSchema = new mongoose.Schema({
     turn: { type: String, enum: ['BS', 'BA', 'N', 'RS', 'RA'], default: 'BS' },
     blueScore: {type: Number, default: 0},
     redScore: {type: Number, default: 0},
+    cardsSelected: {type: Array, default: []},
     winner: String,
     finished: {type: Boolean, default: false},
 });

@@ -54,7 +54,6 @@ function socket (server) {
         let blueScore = 0;
         let redScore = 0;
         Game.findOne({id: room}, function(err, game) {
-          console.log(game);
           game.board.forEach( card => {
             if (card.team === "blue" && card.discovered) {
               blueScore++;
@@ -63,10 +62,10 @@ function socket (server) {
             } else if (card.team === "black" && card.discovered) {
               switch (data.toNextTurn) {
                 case 'BS':
-                  _setFinished(game, 'blue')
+                  _setFinished(game, 'blue');
                   break;
                 case 'RS':
-                  _setFinished(game, 'red')
+                  _setFinished(game, 'red');
                   break
               }
             }
@@ -80,6 +79,7 @@ function socket (server) {
 
           game.blueScore = blueScore;
           game.redScore = redScore;
+          game.cardsSelected = [];
           game.save()
         });
       }
@@ -92,14 +92,19 @@ function socket (server) {
       const {item, turn, player} = data;
 
       if ((turn === 'BA' && player.role === 'BA') || (turn === 'RA' && player.role === 'RA')) {
-        if (cardsSelected.some(card => card._id === item._id)) {
-          cardsSelected = cardsSelected.filter(card => card._id !== item._id)
-        } else {
-          cardsSelected.push(item);
-        }
-      }
 
-      io.to(room).emit('CARDS_SELECT_UPDATE', cardsSelected)
+        await Game.findOne({id:room}, function (err, game) {
+          console.log(game.cardsSelected)
+          if (game.cardsSelected.some(card => card._id === item._id)) {
+            game.cardsSelected = game.cardsSelected.filter(card => card._id !== item._id)
+          } else {
+            game.cardsSelected.push(item);
+          }
+          game.save();
+          
+          io.to(room).emit('CARDS_SELECT_UPDATE', game.cardsSelected);
+        });
+      }
     });
 
 
