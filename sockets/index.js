@@ -76,12 +76,21 @@ function socket (server) {
           if (redScore === 7 && !game.finished){
             _setFinished(game, 'red')
           }
-
           game.blueScore = blueScore;
           game.redScore = redScore;
           game.cardsSelected = [];
           game.save()
         });
+      } else {
+        await Game.findOneAndUpdate(
+            {id:room},
+            {
+              $set: {
+                tip: data,
+              }
+            },
+            { new: true }
+        );
       }
       cardsSelected = [];
       io.to(room).emit('CARDS_SELECT_UPDATE', cardsSelected);

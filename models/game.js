@@ -18,6 +18,10 @@ const gameSchema = new mongoose.Schema({
     blueScore: {type: Number, default: 0},
     redScore: {type: Number, default: 0},
     cardsSelected: {type: Array, default: []},
+    tip: {
+        wordUsed: String,
+        number: Number,
+    },
     winner: String,
     finished: {type: Boolean, default: false},
 });
