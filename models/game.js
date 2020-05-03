@@ -24,6 +24,14 @@ const gameSchema = new mongoose.Schema({
     },
     winner: String,
     finished: {type: Boolean, default: false},
+    createdAt: {type: Date},
+});
+
+gameSchema.index({createdAt: 1},{ expireAfterSeconds: 7200 });
+
+gameSchema.pre("save", function(next) {
+    this.createdAt = new Date();
+    next();
 });
 
 module.exports = mongoose.model('Game', gameSchema );
